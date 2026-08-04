@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "847140418099",
+    "project_id": "caro-e5034",
+    "storage_bucket": "caro-e5034.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847140418099:android:b033ddb69c091333102946",
+        "android_client_info": {
+          "package_name": "com.thecaro.caroapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHaGiLX2iuLQ4uRHFAvDwr5Y6ZocAWJzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
