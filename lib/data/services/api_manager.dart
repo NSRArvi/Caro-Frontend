@@ -572,39 +572,6 @@ class ApiManager {
     }
   }
 
-  // static Future<Map<String, dynamic>> applyBid({
-  //   required String token,
-  //   required String orderId,
-  //   required int bidAmount,
-  // }) async {
-  //   final url = Uri.parse(
-  //     "${AppConstants.baseUrl}${AppConstants.bidPlacement}$orderId",
-  //   );
-
-  //   log("Apply Bid Url $url");
-
-  //   final response = await http.post(
-  //     url,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Authorization": "Bearer $token",
-  //     },
-  //     body: jsonEncode({"bid_amount": bidAmount.toString()}),
-  //   );
-
-  //   log("Apply Bid response $response");
-  //   if (isUnauthorizedResponse(response)) {
-  //     authController.logOut();
-  //   }
-  //   if (response.statusCode == 201) {
-  //     return jsonDecode(response.body);
-  //   } else {
-  //     return _handleResponse(response);
-  //     // throw Exception(
-  //     //   "Failed to apply bid: ${response.statusCode} - ${response.body}",
-  //     // );
-  //   }
-  // }
   static Future<Map<String, dynamic>> applyBid({
     required String token,
     required String orderId,

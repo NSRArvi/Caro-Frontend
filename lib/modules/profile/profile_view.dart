@@ -367,37 +367,6 @@ class ProfileView extends GetView<ProfileController> {
             }
           },
 
-          // onTap: () async {
-          //   final date = await showDatePicker(
-          //     context: context,
-          //     firstDate: DateTime(1900),
-          //     lastDate: DateTime.now(),
-          //     initialDate: DateTime(2000),
-          //     builder: (context, child) {
-          //       return Theme(
-          //         data: Theme.of(context).copyWith(
-          //           dialogBackgroundColor:
-          //               Colors.blue.shade50, // 🎯 change bg color
-          //           colorScheme: ColorScheme.light(
-          //             primary: AppColors.primaryColor, // header & selected date
-          //             onPrimary: Colors.white, // text color on selected date
-          //             onSurface: Colors.black, // default text color
-          //           ),
-          //           textButtonTheme: TextButtonThemeData(
-          //             style: TextButton.styleFrom(
-          //               foregroundColor:
-          //                   AppColors.primaryColor, // button text color
-          //             ),
-          //           ),
-          //         ),
-          //         child: child!,
-          //       );
-          //     },
-          //   );
-          //   if (date != null) {
-          //     controller.text = date.toIso8601String().split("T").first;
-          //   }
-          // },
           child: AbsorbPointer(
             child: TextFormField(
               keyboardType: TextInputType.datetime,

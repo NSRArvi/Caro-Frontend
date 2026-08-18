@@ -54,21 +54,7 @@ class InternationalConfirmationStep extends StatelessWidget {
             editable: true,
           ),
           const SizedBox(height: 16),
-          // Container(
-          //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          //   decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(24),
-          //     color: Colors.white,
-          //   ),
-          //   child: const Row(
-          //     mainAxisSize: MainAxisSize.min,
-          //     children: [
-          //       Icon(Icons.access_time, size: 18, color: Colors.black54),
-          //       SizedBox(width: 6),
-          //       Text("Take around 20 min", style: TextStyle(fontSize: 13)),
-          //     ],
-          //   ),
-          // ),
+
         ],
       ),
     );

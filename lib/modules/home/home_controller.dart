@@ -39,16 +39,7 @@ class HomeController extends GetxController {
     loadBanners();
   }
 
-  // @override
-  // void onReady() {
-  //   super.onReady();
 
-  //   final notificationService = Get.find<NotificationService>();
-
-  //   if (notificationService.pendingNotificationData != null) {
-  //     notificationService.handlePendingNavigation();
-  //   }
-  // }
 
   Future<void> loadBanners() async {
     isBannerLoading.value = true;

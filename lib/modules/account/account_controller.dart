@@ -17,27 +17,7 @@ class AccountController extends GetxController {
   late Rx<bool> isRiderDocSubmitted;
   var orderOverview = Rxn<OrderOverviewModel>();
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
 
-  //   isRiderDocSubmitted = false.obs;
-
-  //   ever(authController.user, (user) {
-  //     if (user != null) {
-  //       isRiderDocSubmitted.value =
-  //           user.roles.contains('rider') ?? false;
-  //     }
-  //   });
-
-  //   loadOrderOverview();
-
-  //   ever(Get.find<HomeController>().selectedTabIndex, (index) {
-  //     if (index == 2) {
-  //       loadOrderOverview();
-  //     }
-  //   });
-  // }
   @override
   void onInit() {
     super.onInit();

@@ -33,7 +33,6 @@ class NotificationService extends GetxService {
     if (data != null) {
       log("🔥 Executing Navigation from Pending Data: $data");
 
-      // Delay ektu bariye 1000-1500ms korun jate splash screen load hoye jay
       Future.delayed(const Duration(milliseconds: 1500), () {
         _handleMessageNavigation(data);
       });
@@ -171,22 +170,8 @@ class NotificationService extends GetxService {
     });
   }
 
-  /// ---------------- TERMINATED ----------------
-  // void _handleTerminatedNotification() async {
-  //   final message = await FirebaseMessaging.instance.getInitialMessage();
-
-  //   if (message != null) {
-  //     log("Notification opened from terminated state");
-
-  //     _logFullMessage(message);
-
-  //     _handleMessageNavigation(message.data);
-  //   }
-  // }
-
   // NotificationService er vitore update korun
   void _handleTerminatedNotification() async {
-    // অ্যাপ যখন একদম বন্ধ থাকে তখন এখান থেকে ডাটা রিসিভ হয়
     RemoteMessage? initialMessage = await FirebaseMessaging.instance
         .getInitialMessage();
 
@@ -194,7 +179,6 @@ class NotificationService extends GetxService {
       log(
         "🔥 TERMINATED MESSAGE DETECTED (Saving for later): ${initialMessage.data}",
       );
-      // সরাসরি নেভিগেট না করে ডাটা সেভ করে রাখুন
       _pendingNotificationData = initialMessage.data;
     }
   }

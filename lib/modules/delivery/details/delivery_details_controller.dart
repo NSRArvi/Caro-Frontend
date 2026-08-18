@@ -150,32 +150,6 @@ void onInit() async {
     isLoading.value = false;
   }
 
-  // Future<void> loadLocations() async {
-  //   final pickupLat = double.parse(deliveryDetails.value!.pickupLatitude);
-  //   final pickupLng = double.parse(deliveryDetails.value!.pickupLongitude);
-  //
-  //   final dropLat = double.parse(deliveryDetails.value!.dropLatitude);
-  //   final dropLng = double.parse(deliveryDetails.value!.dropLongitude);
-  //
-  //   // SET LatLng (THIS WAS MISSING)
-  //   pickupLatLng = LatLng(pickupLat, pickupLng);
-  //   dropoffLatLng = LatLng(dropLat, dropLng);
-  //
-  //   // Reverse geocoding for display text
-  //   List<Placemark> placemarks =
-  //   await placemarkFromCoordinates(pickupLat, pickupLng);
-  //
-  //   final place = placemarks.first;
-  //   pickupLocation = "${place.name}, ${place.street}, ${place.locality}, "
-  //       "${place.administrativeArea}, ${place.country}"
-  //       .obs;
-  //
-  //   placemarks = await placemarkFromCoordinates(dropLat, dropLng);
-  //   final place2 = placemarks.first;
-  //   dropoffLocation = "${place2.name}, ${place2.street}, ${place2.locality}, "
-  //       "${place2.administrativeArea}, ${place2.country}"
-  //       .obs;
-  // }
   Future<void> sendRiderOtp(String otpType) async {
     try {
       isSendingOTP.value = true;
