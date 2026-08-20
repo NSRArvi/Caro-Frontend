@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -59,21 +60,41 @@ class NotificationService extends GetxService {
   }
 
   /// ---------------- PERMISSION ----------------
+  // Future<void> _requestPermission() async {
+  //   NotificationSettings settings = await _messaging.requestPermission(
+  //     alert: true,
+  //     badge: true,
+  //     sound: true,
+  //   );
+  //
+  //   log("Notification permission: ${settings.authorizationStatus}");
+  // }
   Future<void> _requestPermission() async {
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    NotificationSettings settings = await FirebaseMessaging.instance
+        .requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+          provisional: false,
+        );
 
-    log("Notification permission: ${settings.authorizationStatus}");
+    log(
+      "Notification permission: "
+      "${settings.authorizationStatus}",
+    );
   }
 
   /// ---------------- LOCAL NOTIFICATION ----------------
   Future<void> _initLocalNotification() async {
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const settings = InitializationSettings(android: androidInit);
+    const iosInit = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
+    const settings = InitializationSettings(android: androidInit, iOS: iosInit);
 
     // await _localNotifications.initialize(
     //   settings: settings,
@@ -121,15 +142,35 @@ class NotificationService extends GetxService {
   }
 
   /// ---------------- GET TOKEN ----------------
+  // Future<void> _getToken() async {
+  //   try {
+  //     fcmToken = await _messaging.getToken();
+  //     log("FCM TOKEN: $fcmToken");
+  //   } catch (e) {
+  //     log("FCM TOKEN ERROR: $e");
+  //   }
+  // }
   Future<void> _getToken() async {
     try {
+      if (Platform.isIOS) {
+        String? apnsToken =
+        await _messaging.getAPNSToken();
+
+        log("APNs TOKEN: $apnsToken");
+
+        if (apnsToken == null) {
+          log("APNs token not available yet");
+          return;
+        }
+      }
+
       fcmToken = await _messaging.getToken();
+
       log("FCM TOKEN: $fcmToken");
     } catch (e) {
       log("FCM TOKEN ERROR: $e");
     }
   }
-
   /// ---------------- TOKEN REFRESH ----------------
   void _listenTokenRefresh() {
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
@@ -200,6 +241,11 @@ class NotificationService extends GetxService {
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
         ),
       ),
 
@@ -294,7 +340,6 @@ class NotificationService extends GetxService {
     log("NAVIGATION DATA: $data");
     if (_isNavigating) return;
 
-
     // Get.key.currentState check kora besi safe
     if (Get.key.currentState == null) {
       log("❌ Navigator state is null, postponing navigation");
@@ -306,46 +351,46 @@ class NotificationService extends GetxService {
     final route = data['route'];
     final orderId = data['order_id'];
     Future.delayed(const Duration(milliseconds: 200), () {
-    // Future.microtask(() {
-    switch (route) {
-      case '/order_details':
-      case '/new_bid_received':
-        if (orderId != null) {
-          _navigateToOrderDetails(orderId.toString());
-        } else {
-          log("Order ID NULL ❌");
-        }
-        break;
+      // Future.microtask(() {
+      switch (route) {
+        case '/order_details':
+        case '/new_bid_received':
+          if (orderId != null) {
+            _navigateToOrderDetails(orderId.toString());
+          } else {
+            log("Order ID NULL ❌");
+          }
+          break;
 
-      case '/new_order_created':
-        if (orderId != null) {
-          _navigateToNewOrderDetails(orderId.toString());
-        } else {
-          log("Order ID NULL ❌");
-        }
-        break;
-      case '/bid_accepted':
-        if (orderId != null) {
-          _navigateToDeliveriesOrderDetails(orderId.toString());
-        } else {
-          log("Order ID NULL ❌");
-        }
-        break;
-      case '/order_cancelled':
-        if (orderId != null) {
-          _navigateToDeliverieryRequestOrderDetails(orderId.toString());
-        } else {
-          log("Order ID NULL ❌");
-        }
-        break;
+        case '/new_order_created':
+          if (orderId != null) {
+            _navigateToNewOrderDetails(orderId.toString());
+          } else {
+            log("Order ID NULL ❌");
+          }
+          break;
+        case '/bid_accepted':
+          if (orderId != null) {
+            _navigateToDeliveriesOrderDetails(orderId.toString());
+          } else {
+            log("Order ID NULL ❌");
+          }
+          break;
+        case '/order_cancelled':
+          if (orderId != null) {
+            _navigateToDeliverieryRequestOrderDetails(orderId.toString());
+          } else {
+            log("Order ID NULL ❌");
+          }
+          break;
 
-      default:
-        // Get.offAllNamed(AppRoutes.splash);
-        log("Unknown route ❌: $route");
-    }
-    // Future.delayed(const Duration(seconds: 1), () {
-    _isNavigating = false;
-    // });
+        default:
+          // Get.offAllNamed(AppRoutes.splash);
+          log("Unknown route ❌: $route");
+      }
+      // Future.delayed(const Duration(seconds: 1), () {
+      _isNavigating = false;
+      // });
     });
   }
 }
