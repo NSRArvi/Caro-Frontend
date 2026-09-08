@@ -150,21 +150,40 @@ class NotificationService extends GetxService {
   //     log("FCM TOKEN ERROR: $e");
   //   }
   // }
+  // Future<void> _getToken() async {
+  //   try {
+  //     if (Platform.isIOS) {
+  //       String? apnsToken =
+  //       await _messaging.getAPNSToken();
+  //
+  //       log("APNs TOKEN: $apnsToken");
+  //
+  //       if (apnsToken == null) {
+  //         log("APNs token not available yet");
+  //         return;
+  //       }
+  //     }
+  //
+  //     fcmToken = await _messaging.getToken();
+  //
+  //     log("FCM TOKEN: $fcmToken");
+  //   } catch (e) {
+  //     log("FCM TOKEN ERROR: $e");
+  //   }
+  // }
   Future<void> _getToken() async {
     try {
       if (Platform.isIOS) {
-        String? apnsToken =
-        await _messaging.getAPNSToken();
-
+        String? apnsToken = await _messaging.getAPNSToken();
         log("APNs TOKEN: $apnsToken");
-
-        if (apnsToken == null) {
-          log("APNs token not available yet");
-          return;
-        }
       }
 
-      fcmToken = await _messaging.getToken();
+      for (int i = 0; i < 3; i++) {
+        fcmToken = await _messaging.getToken();
+        if (fcmToken != null) break;
+        log("Attempting to get FCM Token again... ($i)");
+        await Future.delayed(const Duration(seconds: 2));
+      }
 
       log("FCM TOKEN: $fcmToken");
     } catch (e) {

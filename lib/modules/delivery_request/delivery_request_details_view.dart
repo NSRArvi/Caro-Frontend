@@ -50,13 +50,14 @@ class _DeliveryRequestDetailsViewState
   /// 🔥 Google Directions API
   Future<void> getRoute() async {
     try {
-      const apiKey = "AIzaSyA_L-EJWV8sVrEVWFwLuGxQuJLLCNkt0XE";
+      const apiKey = "AIzaSyBHaGiLX2iuLQ4uRHFAvDwr5Y6ZocAWJzM";
 
       final url = Uri.parse(
         "https://maps.googleapis.com/maps/api/directions/json?origin=${widget.pickupLatLng.latitude},${widget.pickupLatLng.longitude}&destination=${widget.dropoffLatLng.latitude},${widget.dropoffLatLng.longitude}&key=$apiKey",
       );
 
       final response = await http.get(url);
+      log("Directions API Response: ${response.body}");
 
       final data = json.decode(response.body);
 

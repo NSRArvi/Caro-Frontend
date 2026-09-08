@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 import FirebaseCore
-// This is required for calling FlutterLocalNotificationsPlugin.setPluginRegistrantCallback method.
+import GoogleMaps
 import flutter_local_notifications
 
 @main
@@ -10,6 +10,7 @@ import flutter_local_notifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    GMSServices.provideAPIKey("AIzaSyDuel0B-1QFkCNiwXrO3cKjMFprv__nk1E")
     FirebaseApp.configure()
 
     // This is required to make any communication available in the action isolate.

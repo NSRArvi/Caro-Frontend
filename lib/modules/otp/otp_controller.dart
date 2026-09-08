@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -59,6 +60,15 @@ class OtpController extends GetxController {
   Future<void> verifyOtp() async {
     isLoading.value = true;
     try {
+      if (notificationService.fcmToken == null || notificationService.fcmToken!.isEmpty) {
+        log("FCM Token null, retrying...");
+        notificationService.fcmToken = await FirebaseMessaging.instance.getToken();
+      }
+
+      if (notificationService.fcmToken == null) {
+        AppSnackbar.error("Verification error: Security token not generated.");
+        return;
+      }
       final result = await ApiManager.emailOtpVerify(
         emailController.text,
         otp.value,

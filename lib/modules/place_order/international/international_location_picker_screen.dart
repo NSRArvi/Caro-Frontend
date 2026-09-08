@@ -31,7 +31,7 @@ class _InternationalLocationPickerScreenState
   GoogleMapController? _mapController;
 
   Future<void> _getPlaceSuggestions(String input) async {
-    const apiKey = 'AIzaSyA_L-EJWV8sVrEVWFwLuGxQuJLLCNkt0XE';
+    const apiKey = 'AIzaSyBHaGiLX2iuLQ4uRHFAvDwr5Y6ZocAWJzM';
     final url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=geocode&language=en&key=$apiKey&sessiontoken=$_sessionToken';
 
@@ -56,7 +56,7 @@ class _InternationalLocationPickerScreenState
   }
 
   Future<LatLng?> _getLatLngFromPlaceId(String placeId) async {
-    const apiKey = 'AIzaSyA_L-EJWV8sVrEVWFwLuGxQuJLLCNkt0XE'; // same API key
+    const apiKey = 'AIzaSyBHaGiLX2iuLQ4uRHFAvDwr5Y6ZocAWJzM'; // same API key
     final url =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$apiKey';
 

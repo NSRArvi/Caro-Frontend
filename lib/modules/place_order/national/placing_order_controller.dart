@@ -333,7 +333,7 @@ class PlacingOrderController extends GetxController {
     LatLng origin,
     LatLng destination,
   ) async {
-    final String apiKey = 'AIzaSyA_L-EJWV8sVrEVWFwLuGxQuJLLCNkt0XE';
+    final String apiKey = 'AIzaSyBHaGiLX2iuLQ4uRHFAvDwr5Y6ZocAWJzM';
     final url = Uri.parse(
       'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=driving&key=$apiKey',
     );
