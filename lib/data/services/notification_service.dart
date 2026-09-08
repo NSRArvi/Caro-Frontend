@@ -174,20 +174,33 @@ class NotificationService extends GetxService {
   Future<void> _getToken() async {
     try {
       if (Platform.isIOS) {
-        String? apnsToken = await _messaging.getAPNSToken();
-        log("APNs TOKEN: $apnsToken");
+        log("Checking for APNs Token...");
+        for (int i = 0; i < 10; i++) {
+          String? apnsToken = await _messaging.getAPNSToken();
+          if (apnsToken != null) {
+            log("🔥 APNs Token Found: $apnsToken");
+            break;
+          }
+          log("⏳ Waiting for APNs token... attempt ${i + 1}");
+          await Future.delayed(const Duration(seconds: 2));
+        }
       }
 
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0; i < 5; i++) {
         fcmToken = await _messaging.getToken();
-        if (fcmToken != null) break;
-        log("Attempting to get FCM Token again... ($i)");
+        if (fcmToken != null) {
+          log("✅ FCM TOKEN SUCCESS: $fcmToken");
+          break;
+        }
+        log("🔄 Retrying FCM Token... attempt ${i + 1}");
         await Future.delayed(const Duration(seconds: 2));
       }
 
-      log("FCM TOKEN: $fcmToken");
+      if (fcmToken == null) {
+        log("❌ CRITICAL: FCM Token could not be retrieved!");
+      }
     } catch (e) {
-      log("FCM TOKEN ERROR: $e");
+      log("❌ FCM TOKEN ERROR: $e");
     }
   }
   /// ---------------- TOKEN REFRESH ----------------
