@@ -28,210 +28,214 @@ class RiderProfileEditView extends GetView<RiderProfileEditController> {
             style: AppTypography.sub1Medium.copyWith(color: Colors.white),
           ),
         ),
-        body: controller.isLoading.value
-            ? Center(
-                child: CircularProgressIndicator(color: AppColors.primaryColor),
-              )
-            : SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-                child: Form(
-                  key: controller.formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Select Document Type",
-                          style: TextStyle(fontWeight: FontWeight.w600),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
+            );
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+                  child: Form(
+                    key: controller.formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Select Document Type",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      FormField<String>(
-                        validator: (value) {
-                          if (controller.docTypeController.value.isEmpty) {
-                            return 'Please select a document type';
-                          }
-                          return null;
-                        },
-                        builder: (FormFieldState<String> state) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DropdownMenu<String>(
-                                width: MediaQuery.of(context).size.width - 32.w,
-                                initialSelection:
-                                    controller.docTypeController.value.isEmpty
-                                    ? null
-                                    : controller.docTypeController.value,
-                                hintText: "Select Document Type",
-                                dropdownMenuEntries: const [
-                                  DropdownMenuEntry(
-                                    value: 'Passport',
-                                    label: 'Passport',
+                        const SizedBox(height: 8),
+                        FormField<String>(
+                          validator: (value) {
+                            if (controller.docTypeController.value.isEmpty) {
+                              return 'Please select a document type';
+                            }
+                            return null;
+                          },
+                          builder: (FormFieldState<String> state) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropdownMenu<String>(
+                                  width: MediaQuery.of(context).size.width - 32.w,
+                                  initialSelection:
+                                      controller.docTypeController.value.isEmpty
+                                      ? null
+                                      : controller.docTypeController.value,
+                                  hintText: "Select Document Type",
+                                  dropdownMenuEntries: const [
+                                    DropdownMenuEntry(
+                                      value: 'Passport',
+                                      label: 'Passport',
+                                    ),
+                                    DropdownMenuEntry(
+                                      value: 'ID Card',
+                                      label: 'ID Card',
+                                    ),
+                                    DropdownMenuEntry(
+                                      value: 'Driver License',
+                                      label: 'Driver License',
+                                    ),
+                                  ],
+                                  onSelected: (String? newValue) {
+                                    if (newValue != null) {
+                                      controller.docTypeController.value =
+                                          newValue;
+                                      controller.frontFile.value = null;
+                                      controller.backFile.value = null;
+                                      controller.singleDocFile.value = null;
+                                      state.didChange(
+                                        newValue,
+                                      ); // important for validation
+                                    }
+                                  },
+                                  inputDecorationTheme: InputDecorationTheme(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                        color: AppColors.black100,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                        width: 1.5,
+                                      ),
+                                    ),
                                   ),
-                                  DropdownMenuEntry(
-                                    value: 'ID Card',
-                                    label: 'ID Card',
+                                  menuStyle: MenuStyle(
+                                    backgroundColor: WidgetStateProperty.all(
+                                      Colors.white,
+                                    ),
+                                    surfaceTintColor: WidgetStateProperty.all(
+                                      Colors.transparent,
+                                    ),
+                                    fixedSize: WidgetStateProperty.all(
+                                      Size(
+                                        MediaQuery.of(context).size.width - 32.w,
+                                        180.h,
+                                      ),
+                                    ),
+                                    elevation: WidgetStateProperty.all(4),
                                   ),
-                                  DropdownMenuEntry(
-                                    value: 'Driver License',
-                                    label: 'Driver License',
+                                ),
+                                if (state.hasError)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 6,
+                                      left: 4,
+                                    ),
+                                    child: Text(
+                                      state.errorText ?? '',
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Enter Document Number",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: controller.docNumberController,
+                          validator: (val) {
+                            if (val == null || val.isEmpty) {
+                              return 'Required Field';
+                            }
+                            if (controller.docTypeController.value == 'ID Card' &&
+                                val.length < 10) {
+                              return 'ID number must be 10 digit or more';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'XXXXXXXXX',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: AppColors.black100),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
+                          ),
+                        ),
+                        18.verticalSpace,
+                        _buildDatePickerField(
+                          "Expiry date",
+                          controller.expiryDateController,
+                          context,
+                        ),
+                        18.verticalSpace,
+                        const SizedBox(height: 20),
+                        // Document Images
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Document Image",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        controller.docTypeController.value == 'Passport'
+                            ? _imageUploadField(
+                                controller.singleDocFile,
+                                "Upload Document",
+                                () => controller.pickImage("single"),
+                              )
+                            : Column(
+                                children: [
+                                  _imageUploadField(
+                                    controller.frontFile,
+                                    "Front Side",
+                                    () => controller.pickImage("front"),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _imageUploadField(
+                                    controller.backFile,
+                                    "Back Side",
+                                    () => controller.pickImage("back"),
                                   ),
                                 ],
-                                onSelected: (String? newValue) {
-                                  if (newValue != null) {
-                                    controller.docTypeController.value =
-                                        newValue;
-                                    controller.frontFile.value = null;
-                                    controller.backFile.value = null;
-                                    controller.singleDocFile.value = null;
-                                    state.didChange(
-                                      newValue,
-                                    ); // important for validation
-                                  }
-                                },
-                                inputDecorationTheme: InputDecorationTheme(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: AppColors.black100,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: Colors.blue,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                ),
-                                menuStyle: MenuStyle(
-                                  backgroundColor: WidgetStateProperty.all(
-                                    Colors.white,
-                                  ),
-                                  surfaceTintColor: WidgetStateProperty.all(
-                                    Colors.transparent,
-                                  ),
-                                  fixedSize: WidgetStateProperty.all(
-                                    Size(
-                                      MediaQuery.of(context).size.width - 32.w,
-                                      180.h,
-                                    ),
-                                  ),
-                                  elevation: WidgetStateProperty.all(4),
-                                ),
                               ),
-                              if (state.hasError)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 6,
-                                    left: 4,
-                                  ),
-                                  child: Text(
-                                    state.errorText ?? '',
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
 
-                      const SizedBox(height: 20),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Enter Document Number",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: controller.docNumberController,
-                        validator: (val) {
-                          if (val == null || val.isEmpty) {
-                            return 'Required Field';
-                          }
-                          if (controller.docTypeController.value == 'ID Card' &&
-                              val.length < 10) {
-                            return 'ID number must be 10 digit or more';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'XXXXXXXXX',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: AppColors.black100),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 14,
-                          ),
-                        ),
-                      ),
-                      18.verticalSpace,
-                      _buildDatePickerField(
-                        "Expiry date",
-                        controller.expiryDateController,
-                        context,
-                      ),
-                      18.verticalSpace,
-                      const SizedBox(height: 20),
-                      // Document Images
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Document Image",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      controller.docTypeController.value == 'Passport'
-                          ? _imageUploadField(
-                              controller.singleDocFile,
-                              "Upload Document",
-                              () => controller.pickImage("single"),
-                            )
-                          : Column(
-                              children: [
-                                _imageUploadField(
-                                  controller.frontFile,
-                                  "Front Side",
-                                  () => controller.pickImage("front"),
-                                ),
-                                const SizedBox(height: 10),
-                                _imageUploadField(
-                                  controller.backFile,
-                                  "Back Side",
-                                  () => controller.pickImage("back"),
-                                ),
-                              ],
-                            ),
-
-                      const SizedBox(height: 20),
-                    ],
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ),
-        bottomNavigationBar: controller.isLoading.value
-            ? SizedBox()
-            : Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 24.0,
                   horizontal: 16,
@@ -259,6 +263,9 @@ class RiderProfileEditView extends GetView<RiderProfileEditController> {
                   ),
                 ),
               ),
+            ],
+          );
+        }),
       );
     });
   }

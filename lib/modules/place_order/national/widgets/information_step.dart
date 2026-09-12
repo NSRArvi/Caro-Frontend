@@ -823,59 +823,74 @@ class _InformationStepState extends State<InformationStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   "Select Country",
-        //   style: AppTypography.bodyMedium.copyWith(color: AppColors.black700),
-        // ),
-        // const SizedBox(height: 6),
-        Container(
-          height: 52,
-          // padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            // border: Border.all(color: AppColors.black100),
-          ),
-          child: Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CountryCodePicker(
-                onChanged: (code) {
-                  countryCode.value = code.dialCode ?? '+1';
-                  countryName.value = code.code ?? 'Canada';
-                },
-                // initialSelection: 'CA',
-                initialSelection: countryName.value,
-                favorite: const ['+1', '+880', '+91'],
-                showCountryOnly: true,
-                showOnlyCountryWhenClosed: true,
-                hideMainText: false,
-                alignLeft: false,
+        CountryCodePicker(
+          onChanged: (code) {
+            if (code != null) {
+              countryCode.value = code.dialCode ?? '+1';
+              countryName.value = code.code ?? 'Canada';
+            }
+          },
+          initialSelection: countryName.value,
+          favorite: const ['+1', '+880', '+91'],
+          showCountryOnly: true,
+          showOnlyCountryWhenClosed: true,
+          alignLeft: false,
+          builder: (code) {
+            return Container(
+              height: 52,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
               ),
-            ],
-          ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  if (code != null)
+                    Image.asset(
+                      code.flagUri!,
+                      package: 'country_code_picker',
+                      width: 32,
+                    ),
+                  const SizedBox(width: 8),
+                  Text(
+                    code?.name ?? countryName.value,
+                    style: AppTypography.bodyRegular,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
         const SizedBox(height: 10),
-        // Text(
-        //   "Enter Phone Number",
-        //   style: AppTypography.bodyMedium.copyWith(color: AppColors.black700),
-        // ),
-        // const SizedBox(height: 6),
         Row(
           children: [
             ///  Country Code Display
-            Container(
-              height: 52,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-                // border: Border.all(color: AppColors.black100),
-              ),
-              child: Obx(
-                () => Text(countryCode.value, style: AppTypography.bodyRegular),
-              ),
+            CountryCodePicker(
+              onChanged: (code) {
+                if (code != null) {
+                  countryCode.value = code.dialCode ?? '+1';
+                  countryName.value = code.code ?? 'Canada';
+                }
+              },
+              initialSelection: countryName.value,
+              favorite: const ['+1', '+880', '+91'],
+              builder: (code) {
+                return Container(
+                  height: 52,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Obx(
+                    () => Text(
+                      countryCode.value,
+                      style: AppTypography.bodyRegular,
+                    ),
+                  ),
+                );
+              },
             ),
 
             const SizedBox(width: 8),
@@ -928,59 +943,74 @@ class _InformationStepState extends State<InformationStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   "Select Country",
-        //   style: AppTypography.bodyMedium.copyWith(color: AppColors.black700),
-        // ),
-        // const SizedBox(height: 6),
-        Container(
-          height: 52,
-          // padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            // border: Border.all(color: AppColors.black100),
-          ),
-          child: Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CountryCodePicker(
-                onChanged: (code) {
-                  countryCode.value = code.dialCode ?? '+1';
-                  countryName.value = code.code ?? 'Canada';
-                },
-                // initialSelection: 'CA',
-                initialSelection: countryName.value,
-                favorite: const ['+1', '+880', '+91'],
-                showCountryOnly: true,
-                showOnlyCountryWhenClosed: true,
-                hideMainText: false,
-                alignLeft: false,
+        CountryCodePicker(
+          onChanged: (code) {
+            if (code != null) {
+              countryCode.value = code.dialCode ?? '+1';
+              countryName.value = code.code ?? 'Canada';
+            }
+          },
+          initialSelection: countryName.value,
+          favorite: const ['+1', '+880', '+91'],
+          showCountryOnly: true,
+          showOnlyCountryWhenClosed: true,
+          alignLeft: false,
+          builder: (code) {
+            return Container(
+              height: 52,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
               ),
-            ],
-          ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  if (code != null)
+                    Image.asset(
+                      code.flagUri!,
+                      package: 'country_code_picker',
+                      width: 32,
+                    ),
+                  const SizedBox(width: 8),
+                  Text(
+                    code?.name ?? countryName.value,
+                    style: AppTypography.bodyRegular,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
         const SizedBox(height: 10),
-        // Text(
-        //   "Enter Phone Number",
-        //   style: AppTypography.bodyMedium.copyWith(color: AppColors.black700),
-        // ),
-        // const SizedBox(height: 6),
         Row(
           children: [
             ///  Country Code Display
-            Container(
-              height: 52,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-                // border: Border.all(color: AppColors.black100),
-              ),
-              child: Obx(
-                () => Text(countryCode.value, style: AppTypography.bodyRegular),
-              ),
+            CountryCodePicker(
+              onChanged: (code) {
+                if (code != null) {
+                  countryCode.value = code.dialCode ?? '+1';
+                  countryName.value = code.code ?? 'Canada';
+                }
+              },
+              initialSelection: countryName.value,
+              favorite: const ['+1', '+880', '+91'],
+              builder: (code) {
+                return Container(
+                  height: 52,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Obx(
+                    () => Text(
+                      countryCode.value,
+                      style: AppTypography.bodyRegular,
+                    ),
+                  ),
+                );
+              },
             ),
 
             const SizedBox(width: 8),

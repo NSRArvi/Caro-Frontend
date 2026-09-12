@@ -39,11 +39,21 @@ class OtpController extends GetxController {
   final NotificationService notificationService = Get.find();
 
   void onOtpChanged(int index, String value) {
-    if (value.isNotEmpty && index < 3) {
-      focusNodes[index + 1].requestFocus();
-    }
-    if (value.isEmpty && index > 0) {
-      focusNodes[index - 1].requestFocus();
+    if (value.length > 1) {
+      String digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+      for (int i = 0; i < digits.length && (index + i) < 4; i++) {
+        otpControllers[index + i].text = digits[i];
+      }
+      int nextFocus = index + digits.length;
+      if (nextFocus > 3) nextFocus = 3;
+      focusNodes[nextFocus].requestFocus();
+    } else {
+      if (value.isNotEmpty && index < 3) {
+        focusNodes[index + 1].requestFocus();
+      }
+      if (value.isEmpty && index > 0) {
+        focusNodes[index - 1].requestFocus();
+      }
     }
   }
 

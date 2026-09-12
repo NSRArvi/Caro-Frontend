@@ -57,56 +57,51 @@ class PlacingOrderView extends GetView<PlacingOrderController> {
                   _buildSteps(),
                   30.verticalSpace,
                   stepWidget,
+                  Container(
+                    width: double.infinity,
+                    height: 65.h,
+                    padding: EdgeInsetsGeometry.only(
+                      top: 10.h,
+                      bottom: 8.h,
+                    ),
+                    child: Obx(
+                      () => controller.currentStep.value == 0
+                          ? locationSubmitButton(controller)
+                          : controller.currentStep.value == 1
+                          ? informationSubmitButton(controller)
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Total (incl. VAT)",
+                                      style: TextStyle(
+                                        fontSize: 13.r,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                    Text(
+                                      "\$"
+                                      "${controller.calculateSubtotal()!.toStringAsFixed(2)} CAD",
+                                      style: TextStyle(
+                                        fontSize: 18.r,
+                                        color: AppColors.primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                placeOrderButton(controller),
+                              ],
+                            ),
+                    ),
+                  ),
                 ],
               );
             }),
-          ),
-        ),
-        bottomNavigationBar: SafeArea(
-          top: false,
-          child: Container(
-            width: double.infinity,
-            height: 65.h,
-            padding: EdgeInsetsGeometry.only(
-              left: 16.w,
-              right: 16.w,
-              top: 2.h,
-              bottom: 16.h,
-            ),
-            child: Obx(
-              () => controller.currentStep.value == 0
-                  ? locationSubmitButton(controller)
-                  : controller.currentStep.value == 1
-                  ? informationSubmitButton(controller)
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Total (incl. VAT)",
-                              style: TextStyle(
-                                fontSize: 13.r,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey.shade700,
-                              ),
-                            ),
-                            Text(
-                              "\$"
-                              "${controller.calculateSubtotal()!.toStringAsFixed(2)} CAD",
-                              style: TextStyle(
-                                fontSize: 18.r,
-                                color: AppColors.primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        placeOrderButton(controller),
-                      ],
-                    ),
-            ),
           ),
         ),
       ),

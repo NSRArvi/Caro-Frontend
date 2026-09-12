@@ -44,90 +44,53 @@ class DeliveryRequestListView extends GetView<DeliveryRequestListController> {
                         ),
                       ),
                       8.verticalSpace,
-                      controller.selectedTab.value == 0
-                          ? controller.deliveryRequestList.value == null
-                                ? SizedBox(
-                                    width: double.infinity,
-                                    height: Get.height * 0.7,
-                                    child: const Center(
-                                      child: Text(
-                                        "There are no available order requests now. ",
-                                      ),
+                      Expanded(
+                        child: controller.selectedTab.value == 0
+                            ? controller.deliveryRequestList.value == null ||
+                                    controller.deliveryRequestList.value!.isEmpty
+                                ? const Center(
+                                    child: Text(
+                                      "There are no available order requests now.",
                                     ),
                                   )
-                                : controller.deliveryRequestList.value!.isEmpty
-                                ? SizedBox(
-                                    width: double.infinity,
-                                    height: Get.height * 0.7,
-                                    child: const Center(
-                                      child: Text(
-                                        "There are no available order requests now. ",
-                                      ),
-                                    ),
-                                  )
-                                : SizedBox(
-                                    height: Get.height - 190.h,
-                                    width: double.infinity,
-                                    child: ListView.builder(
-                                      padding: EdgeInsetsGeometry.symmetric(
-                                        horizontal: 16.w,
-                                      ),
-                                      itemCount: controller
+                                : ListView.builder(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                    itemCount: controller
+                                        .deliveryRequestList
+                                        .value!
+                                        .length,
+                                    itemBuilder: (context, index) {
+                                      final request = controller
                                           .deliveryRequestList
-                                          .value!
-                                          .length,
-                                      itemBuilder: (context, index) {
-                                        final request = controller
-                                            .deliveryRequestList
-                                            .value![index];
-                                        // final attempt =
-                                        //     request.orderAttempts[0];
-                                        return RequestCard(
-                                          requestData: request,
-                                          bid: 50,
-                                          controller: controller,
-                                          isMyBidCard: false,
-                                        );
-                                      },
-                                    ),
+                                          .value![index];
+                                      return RequestCard(
+                                        requestData: request,
+                                        bid: 50,
+                                        controller: controller,
+                                        isMyBidCard: false,
+                                      );
+                                    },
                                   )
-                          : controller.myBidsList.value == null
-                          ? SizedBox(
-                              width: double.infinity,
-                              height: Get.height * 0.7,
-                              child: const Center(
-                                child: Text("There is no Bid to show"),
-                              ),
-                            )
-                          : controller.myBidsList.value!.isEmpty
-                          ? SizedBox(
-                              width: double.infinity,
-                              height: Get.height * 0.7,
-                              child: const Center(
-                                child: Text("There is no Bid to show"),
-                              ),
-                            )
-                          : SizedBox(
-                              height: Get.height - 190.h,
-                              width: double.infinity,
-                              child: ListView.builder(
-                                padding: EdgeInsetsGeometry.symmetric(
-                                  horizontal: 16.w,
-                                ),
-                                itemCount: controller.myBidsList.value!.length,
-                                itemBuilder: (context, index) {
-                                  final request =
-                                      controller.myBidsList.value![index];
-                                  // final attempt = request.orderAttempts[0];
-                                  return RequestCard(
-                                    requestData: request,
-                                    bid: 50,
-                                    controller: controller,
-                                    isMyBidCard: true,
-                                  );
-                                },
-                              ),
-                            ),
+                            : controller.myBidsList.value == null ||
+                                    controller.myBidsList.value!.isEmpty
+                                ? const Center(
+                                    child: Text("There is no Bid to show"),
+                                  )
+                                : ListView.builder(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                    itemCount: controller.myBidsList.value!.length,
+                                    itemBuilder: (context, index) {
+                                      final request =
+                                          controller.myBidsList.value![index];
+                                      return RequestCard(
+                                        requestData: request,
+                                        bid: 50,
+                                        controller: controller,
+                                        isMyBidCard: true,
+                                      );
+                                    },
+                                  ),
+                      ),
                     ],
                   ),
           ),

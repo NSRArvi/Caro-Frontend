@@ -15,7 +15,7 @@ class ActivityView extends GetView<ActivityController> {
         title: const Text('My Activity'),
         backgroundColor: Colors.white,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: ServicesGrid(
           services: controller.services,

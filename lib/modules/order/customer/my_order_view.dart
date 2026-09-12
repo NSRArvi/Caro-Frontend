@@ -43,108 +43,60 @@ class MyOrderView extends GetView<MyOrderController> {
                           onTabSelected: controller.changeTab,
                         ),
                         25.verticalSpace,
-                        controller.selectedTab.value == 0
+                        Expanded(
+                        child: controller.selectedTab.value == 0
                             ? controller.ongoingOrders.value.isEmpty
-                                  ? SizedBox(
-                                      width: double.infinity,
-                                      height: Get.height * 0.7,
-                                      child: Center(
-                                        child: Text(
-                                          "No ongoing orders to show",
-                                        ),
-                                      ),
-                                    )
-                                  : SizedBox(
-                                      height: Get.height - 190.h,
-                                      width: double.infinity,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: controller
-                                            .ongoingOrders
-                                            .value
-                                            .length,
-                                        itemBuilder: (context, index) {
-                                          final order = controller
-                                              .ongoingOrders
-                                              .value[index];
-                                          return Column(
-                                            children: [
-                                              OrderCard(
-                                                orderId: order.orderId,
-                                                date: order.date.toString(),
-                                                fromLat:
-                                                    '${double.parse(order.pickupLatitude)}',
-                                                fromLong:
-                                                    '${double.parse(order.pickupLongitude)}',
-                                                toLat:
-                                                    '${double.parse(order.dropLatitude)}',
-                                                toLong:
-                                                    '${double.parse(order.dropLongitude)}',
-                                                status: order.status
-                                                    .replaceFirst(
-                                                      order.status[0],
-                                                      order.status[0]
-                                                          .toUpperCase(),
-                                                    ),
-                                                orderType: order.orderType,
-                                                onPressed: () async {
-                                                  final result =
-                                                      await Get.toNamed(
-                                                        AppRoutes.orderDetails,
-                                                        arguments:
-                                                            order.orderId,
-                                                      ) ??
-                                                      false;
-                                                  if (result) {
-                                                    await controller
-                                                        .fetchOrders();
-                                                  }
-                                                },
-                                              ),
-                                              const SizedBox(height: 12),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    )
-                            : controller.completedOrders.isEmpty
-                            ? SizedBox(
-                                width: double.infinity,
-                                height: Get.height * 0.7,
-                                child: Center(
-                                  child: Text("No Completed orders to show"),
-                                ),
-                              )
-                            : SizedBox(
-                                height: Get.height - 190.h,
-                                width: double.infinity,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount:
-                                      controller.completedOrders.value.length,
-                                  itemBuilder: (context, index) {
-                                    final order =
-                                        controller.completedOrders.value[index];
-                                    log(
-                                      "completed orders: ${controller.completedOrders.value[index].orderId}",
-                                    );
-                                    return Column(
-                                      children: [
-                                        OrderCard(
+                                ? const Center(
+                                    child: Text("No ongoing orders to show"),
+                                  )
+                                : ListView.builder(
+                                    itemCount: controller.ongoingOrders.value.length,
+                                    itemBuilder: (context, index) {
+                                      final order = controller.ongoingOrders.value[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: OrderCard(
                                           orderId: order.orderId,
-                                          date: order
-                                              .orderAttempts
-                                              .first
-                                              .orderDate
-                                              .toString(),
-                                          fromLat:
-                                              '${double.parse(order.pickupLatitude)}',
-                                          fromLong:
-                                              '${double.parse(order.pickupLongitude)}',
-                                          toLat:
-                                              '${double.parse(order.dropLatitude)}',
-                                          toLong:
-                                              '${double.parse(order.dropLongitude)}',
+                                          date: order.date.toString(),
+                                          fromLat: '${double.parse(order.pickupLatitude)}',
+                                          fromLong: '${double.parse(order.pickupLongitude)}',
+                                          toLat: '${double.parse(order.dropLatitude)}',
+                                          toLong: '${double.parse(order.dropLongitude)}',
+                                          status: order.status.replaceFirst(
+                                            order.status[0],
+                                            order.status[0].toUpperCase(),
+                                          ),
+                                          orderType: order.orderType,
+                                          onPressed: () async {
+                                            final result = await Get.toNamed(
+                                              AppRoutes.orderDetails,
+                                              arguments: order.orderId,
+                                            ) ?? false;
+                                            if (result) {
+                                              await controller.fetchOrders();
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  )
+                            : controller.completedOrders.isEmpty
+                                ? const Center(
+                                    child: Text("No Completed orders to show"),
+                                  )
+                                : ListView.builder(
+                                    itemCount: controller.completedOrders.value.length,
+                                    itemBuilder: (context, index) {
+                                      final order = controller.completedOrders.value[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: OrderCard(
+                                          orderId: order.orderId,
+                                          date: order.orderAttempts.first.orderDate.toString(),
+                                          fromLat: '${double.parse(order.pickupLatitude)}',
+                                          fromLong: '${double.parse(order.pickupLongitude)}',
+                                          toLat: '${double.parse(order.dropLatitude)}',
+                                          toLong: '${double.parse(order.dropLongitude)}',
                                           status: order.status.replaceFirst(
                                             order.status[0],
                                             order.status[0].toUpperCase(),
@@ -155,27 +107,12 @@ class MyOrderView extends GetView<MyOrderController> {
                                               AppRoutes.orderDetails,
                                               arguments: order.orderId,
                                             );
-                                            // final details =
-                                            // await OrderService
-                                            //     .fetchOrderDetails(
-                                            //     order.orderId);
-                                            // if (details != null) {
-                                            //   Get.to(() =>
-                                            //       OrderDetailsScreen(
-                                            //           orderDetails:
-                                            //           details));
-                                            // } else {
-                                            //   Get.snackbar("Error",
-                                            //       "Failed to load order details");
-                                            // }
                                           },
                                         ),
-                                        const SizedBox(height: 12),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ),
+                                      );
+                                    },
+                                  ),
+                      ),
                       ],
                     )
                   : Center(

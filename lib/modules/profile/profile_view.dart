@@ -26,184 +26,177 @@ class ProfileView extends GetView<ProfileController> {
           style: AppTypography.sub1Medium.copyWith(color: Colors.white),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Obx(() {
-          return controller.isLoading.value
-              ? SizedBox()
-              : Container(
-                  color: Colors.white,
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    top: 16.w,
-                    bottom: 20.h,
-                    right: 16.w,
-                    left: 16.w,
-                  ),
-                  margin: EdgeInsetsGeometry.only(top: 5.w),
-                  child: CustomButton(
-                    text: 'Submit',
-                    function: () {
-                      if (!controller.formKey.currentState!.validate()) {
-                        AppSnackbar.error(
-                          'Please fill all required fields',
-                          // colorText: Colors.white,
-                          // backgroundColor: Colors.red,
-                        );
-                        return;
-                      }
-
-                      if (controller.dobController.text.isEmpty) {
-                        AppSnackbar.error(
-                          'Please select your Date of Birth',
-                          // colorText: Colors.white,
-                          // backgroundColor: Colors.red,
-                        );
-                        return;
-                      }
-
-                      final dob = DateTime.parse(controller.dobController.text);
-                      final age = DateTime.now().year - dob.year;
-                      if (age < 18) {
-                        AppSnackbar.error(
-                          'You must be at least 18 years old',
-                          // backgroundColor: Colors.red,
-                          // colorText: Colors.white,
-                        );
-                        return;
-                      }
-
-                      if (controller.gender.value.isEmpty) {
-                        AppSnackbar.error(
-                          'Please select your gender',
-                          // colorText: Colors.white,
-                          // backgroundColor: Colors.red,
-                        );
-                        return;
-                      }
-
-                      controller.updateProfile();
-                    },
-                  ),
-                );
-        }),
-      ),
       body: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryColor),
-            );
-          }
-          final user = controller.authController.user.value;
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    Container(
-                      height: 70.h,
+        child: Column(
+          children: [
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(
                       color: AppColors.primaryColor,
-                      width: double.infinity,
                     ),
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsGeometry.only(top: 15.h),
-                          child: Stack(
-                            alignment: Alignment.center,
+                  );
+                }
+                final user = controller.authController.user.value;
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: [
+                          Container(
+                            height: 70.h,
+                            color: AppColors.primaryColor,
+                            width: double.infinity,
+                          ),
+                          Stack(
+                            alignment: Alignment.bottomRight,
                             children: [
-                              CircleAvatar(
-                                radius: 64.r,
-                                backgroundColor: Colors.white,
+                              Padding(
+                                padding: EdgeInsetsGeometry.only(top: 15.h),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 64.r,
+                                      backgroundColor: Colors.white,
+                                    ),
+                                    Obx(() {
+                                      final img =
+                                          controller.croppedFile.value ??
+                                          controller.imageFile.value;
+                                      return CircleAvatar(
+                                        radius: 60.r,
+                                        backgroundImage: img != null
+                                            ? FileImage(img)
+                                            : (user?.profileImage != null
+                                                      ? NetworkImage(
+                                                          user!.profileImage!,
+                                                        )
+                                                      : const AssetImage(
+                                                          'assets/images/profile.png',
+                                                        ))
+                                                  as ImageProvider,
+                                      );
+                                    }),
+                                  ],
+                                ),
                               ),
-                              Obx(() {
-                                final img =
-                                    controller.croppedFile.value ??
-                                    controller.imageFile.value;
-                                return CircleAvatar(
-                                  radius: 60.r,
-                                  backgroundImage: img != null
-                                      ? FileImage(img)
-                                      : (user?.profileImage != null
-                                                ? NetworkImage(
-                                                    user!.profileImage!,
-                                                  )
-                                                : const AssetImage(
-                                                    'assets/images/profile.png',
-                                                  ))
-                                            as ImageProvider,
-                                );
-                              }),
+                              GestureDetector(
+                                onTap: controller.pickImage,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  child: Image.asset(
+                                    'assets/images/edit.png',
+                                    width: 20.w,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Form
+                      Padding(
+                        padding: EdgeInsets.all(16.w),
+                        child: Form(
+                          key: controller.formKey,
+                          child: Column(
+                            children: [
+                              _buildTextField(
+                                label: 'Enter Name',
+                                hintText: 'Type name',
+                                controller: controller.nameController,
+                              ),
+                              18.verticalSpace,
+                              _buildTextField(
+                                label: 'Email Address',
+                                hintText: 'Type email',
+                                controller: controller.emailController,
+                              ),
+                              18.verticalSpace,
+                              phoneInputField(
+                                controller: controller.phoneController,
+                                countryCode: controller.receiverCountryCode,
+                                countryName: controller.selectedCountryName,
+                              ),
+                              18.verticalSpace,
+                              _buildDatePickerField(
+                                "Date of Birth",
+                                controller.dobController,
+                                context,
+                              ),
+                              18.verticalSpace,
+                              Obx(() => _buildDropdownField("Select Gender")),
+                              32.verticalSpace,
                             ],
                           ),
                         ),
-                        GestureDetector(
-                          onTap: controller.pickImage,
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.primaryColor,
-                            ),
-                            child: Image.asset(
-                              'assets/images/edit.png',
-                              width: 20.w,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-
-                // Form
-                Padding(
-                  padding: EdgeInsets.all(16.w),
-                  child: Form(
-                    key: controller.formKey,
-                    child: Column(
-                      children: [
-                        _buildTextField(
-                          label: 'Enter Name',
-                          hintText: 'Type name',
-                          controller: controller.nameController,
-                        ),
-                        18.verticalSpace,
-                        _buildTextField(
-                          label: 'Email Address',
-                          hintText: 'Type email',
-                          controller: controller.emailController,
-                        ),
-                        18.verticalSpace,
-                        phoneInputField(
-                          controller: controller.phoneController,
-                          countryCode: controller.receiverCountryCode,
-                          countryName: controller.selectedCountryName,
-                        ),
-                        18.verticalSpace,
-                        _buildDatePickerField(
-                          "Date of Birth",
-                          controller.dobController,
-                          context,
-                        ),
-                        18.verticalSpace,
-                        Obx(() => _buildDropdownField("Select Gender")),
-                        32.verticalSpace,
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                );
+              }),
             ),
-          );
-        }),
+            Obx(() {
+              return controller.isLoading.value
+                  ? const SizedBox()
+                  : Container(
+                      color: Colors.white,
+                      width: double.infinity,
+                      padding: EdgeInsets.only(
+                        top: 16.w,
+                        bottom: 20.h,
+                        right: 16.w,
+                        left: 16.w,
+                      ),
+                      margin: EdgeInsets.only(top: 5.w),
+                      child: CustomButton(
+                        text: 'Submit',
+                        function: () {
+                          if (!controller.formKey.currentState!.validate()) {
+                            AppSnackbar.error('Please fill all required fields');
+                            return;
+                          }
+
+                          if (controller.dobController.text.isEmpty) {
+                            AppSnackbar.error(
+                              'Please select your Date of Birth',
+                            );
+                            return;
+                          }
+
+                          final dob = DateTime.parse(
+                            controller.dobController.text,
+                          );
+                          final age = DateTime.now().year - dob.year;
+                          if (age < 18) {
+                            AppSnackbar.error('You must be at least 18 years old');
+                            return;
+                          }
+
+                          if (controller.gender.value.isEmpty) {
+                            AppSnackbar.error('Please select your gender');
+                            return;
+                          }
+
+                          controller.updateProfile();
+                        },
+                      ),
+                    );
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -222,34 +215,44 @@ class ProfileView extends GetView<ProfileController> {
           style: AppTypography.bodyMedium.copyWith(color: AppColors.black700),
         ),
         const SizedBox(height: 6),
-        Container(
-          height: 52,
-          // padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.black100),
-          ),
-          child: Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CountryCodePicker(
-                onChanged: (code) {
-                  if (code != null) {
-                    countryCode.value = code.dialCode ?? '+1';
-                    countryName.value = code.code ?? 'Canada';
-                  }
-                },
-                // initialSelection: 'CA',
-                initialSelection: countryName.value,
-                favorite: const ['+1', '+880', '+91'],
-                showCountryOnly: true,
-                showOnlyCountryWhenClosed: true,
-                hideMainText: false,
-                alignLeft: false,
+        CountryCodePicker(
+          onChanged: (code) {
+            if (code != null) {
+              countryCode.value = code.dialCode ?? '+1';
+              countryName.value = code.code ?? 'Canada';
+            }
+          },
+          initialSelection: countryName.value,
+          favorite: const ['+1', '+880', '+91'],
+          showCountryOnly: true,
+          showOnlyCountryWhenClosed: true,
+          alignLeft: false,
+          builder: (code) {
+            return Container(
+              height: 52,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.black100),
               ),
-            ],
-          ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  if (code != null)
+                    Image.asset(
+                      code.flagUri!,
+                      package: 'country_code_picker',
+                      width: 32,
+                    ),
+                  const SizedBox(width: 8),
+                  Text(
+                    code?.name ?? countryName.value,
+                    style: AppTypography.bodyRegular,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
         const SizedBox(height: 18),
         Text(
@@ -260,18 +263,33 @@ class ProfileView extends GetView<ProfileController> {
         Row(
           children: [
             ///  Country Code Display
-            Container(
-              height: 52,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.black100),
-              ),
-              child: Obx(
-                () => Text(countryCode.value, style: AppTypography.bodyRegular),
-              ),
+            CountryCodePicker(
+              onChanged: (code) {
+                if (code != null) {
+                  countryCode.value = code.dialCode ?? '+1';
+                  countryName.value = code.code ?? 'Canada';
+                }
+              },
+              initialSelection: countryName.value,
+              favorite: const ['+1', '+880', '+91'],
+              builder: (code) {
+                return Container(
+                  height: 52,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.black100),
+                  ),
+                  child: Obx(
+                    () => Text(
+                      countryCode.value,
+                      style: AppTypography.bodyRegular,
+                    ),
+                  ),
+                );
+              },
             ),
 
             const SizedBox(width: 8),

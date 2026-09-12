@@ -35,12 +35,9 @@ class WalletHome extends GetView<WalletController> {
                     color: AppColors.primaryColor,
                   ),
                 )
-              : SizedBox(
-                  height: Get.height,
-                  width: Get.width,
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: [
+              : ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
                       Container(
                         width: Get.width,
                         height: 160.h,
@@ -251,7 +248,6 @@ class WalletHome extends GetView<WalletController> {
                         ),
                     ],
                   ),
-                ),
         ),
       ),
     );
