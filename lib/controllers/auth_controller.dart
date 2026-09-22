@@ -29,10 +29,30 @@ class AuthController extends GetxController {
     riderProfile.value = rider;
   }
 
-  logOut() async {
+  Future<void> clearAuthData() async {
     await AuthService.clearToken();
-    AppSnackbar.error( "Your session has been expired!");
-    Get.offAllNamed(AppRoutes.signIn);
+    token.value = '';
+    user.value = null;
+    riderProfile.value = null;
+  }
+
+  bool _isLoggingOut = false;
+
+  logOut() async {
+    if (_isLoggingOut) return;
+    _isLoggingOut = true;
+    try {
+      await clearAuthData();
+      if (Get.currentRoute != AppRoutes.signIn) {
+        AppSnackbar.error("Your session has been expired!");
+        Get.offAllNamed(AppRoutes.signIn);
+      }
+    } finally {
+      // Small delay to prevent immediate re-triggering during transition
+      Future.delayed(const Duration(seconds: 1), () {
+        _isLoggingOut = false;
+      });
+    }
   }
 
   void launchURL(String url) async {

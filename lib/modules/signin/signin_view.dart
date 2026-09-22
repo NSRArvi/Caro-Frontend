@@ -135,7 +135,7 @@ class SignInView extends GetView<SignInController> {
                                             ),
                                           ),
                                         ),
-                                        const TextSpan(text: ' of Jimamu.'),
+                                        const TextSpan(text: ' of CARO.'),
                                       ],
                                     ),
                                   ),

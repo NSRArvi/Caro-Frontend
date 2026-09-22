@@ -19,21 +19,38 @@ import '../models/rider_profile.dart';
 bool isUnauthorizedResponse(dynamic response, {String? body}) {
   try {
     String? responseBody;
+    int statusCode = 0;
 
     if (response is http.Response) {
       responseBody = response.body;
-      if (response.statusCode == 401) return true;
+      statusCode = response.statusCode;
     } else if (response is http.StreamedResponse) {
       responseBody = body; // must be passed manually after decoding
-      if (response.statusCode == 401) return true;
+      statusCode = response.statusCode;
     }
 
-    if (responseBody == null) return false;
+    if (statusCode != 401) return false;
+
+    if (responseBody == null) return true;
 
     final jsonResponse = json.decode(responseBody);
     final message = (jsonResponse["message"] ?? "").toString().toLowerCase();
 
-    return message.contains("unauthenticated");
+    // List of 401 messages that are actually business logic errors,
+    // NOT session expiry. These should NOT trigger a logout.
+    final businessErrors = [
+      "invalid otp",
+      "otp is invalid",
+      "otp code is invalid",
+      "expired otp",
+      "invalid credentials"
+    ];
+
+    for (var error in businessErrors) {
+      if (message.contains(error)) return false;
+    }
+
+    return true;
   } catch (e) {
     return false;
   }
@@ -126,6 +143,40 @@ class ApiManager {
         "success": false,
         "message": getUserFriendlyError(response.statusCode, response.body),
       };
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "Network error. Please check your connection.",
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> delete({
+    required String endpoint,
+    required String token,
+  }) async {
+    final url = Uri.parse("${AppConstants.baseUrl}$endpoint");
+
+    log("Api Delete URL: $url");
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+          "Accept": "application/json",
+        },
+      );
+
+      log("Status Code: ${response.statusCode}");
+      log("Response Body: ${response.body}");
+
+      if (isUnauthorizedResponse(response)) {
+        authController.logOut();
+      }
+
+      return _handleResponse(response);
     } catch (e) {
       return {
         "success": false,

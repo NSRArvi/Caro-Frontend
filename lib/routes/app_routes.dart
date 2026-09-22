@@ -17,4 +17,5 @@ abstract class AppRoutes {
   static const bank_information = '/bank_information';
   static const withdraw = '/withdraw';
   static const locationBlock = '/location-block';
+  static const deleteAccount = '/delete-account';
 }

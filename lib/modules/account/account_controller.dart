@@ -69,7 +69,7 @@ class AccountController extends GetxController {
   }
 
   logOut() async {
-    await AuthService.clearToken();
+    await authController.clearAuthData();
     AppSnackbar.success("Logged Out successfully");
     Get.offAllNamed(AppRoutes.signIn);
   }

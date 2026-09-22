@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:jimamuapp/data/models/rider_profile.dart';
+import 'package:jimamuapp/modules/account/delete_account/delete_account_binding.dart';
+import 'package:jimamuapp/modules/account/delete_account/delete_account_view.dart';
 import 'package:jimamuapp/modules/bank_information/bank_information_bindings.dart';
 import 'package:jimamuapp/modules/bank_information/bank_information_page.dart';
 import 'package:jimamuapp/modules/delivery/details/delivery_details_binding.dart';
@@ -144,5 +146,10 @@ class AppPages {
     ),
 
     GetPage(name: AppRoutes.locationBlock, page: () => LocationBlockScreen()),
+    GetPage(
+      name: AppRoutes.deleteAccount,
+      page: () => const DeleteAccountView(),
+      binding: DeleteAccountBinding(),
+    ),
   ];
 }

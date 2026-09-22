@@ -13,3 +13,14 @@
 
 # Keep annotations
 -keepattributes *Annotation*
+
+# Ignore missing Play Core classes (Fixes R8 missing class error)
+-dontwarn com.google.android.play.core.**
+
+# Stripe Specific Rules
+-keep class com.stripe.** { *; }
+-dontwarn com.stripe.**
+
+# Firebase Specific Rules
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**

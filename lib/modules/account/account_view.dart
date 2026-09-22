@@ -170,6 +170,12 @@ class AccountView extends GetView<AccountController> {
                     "Contact Us",
                     'https://thecaro.app/contact-us',
                   ),
+                  _divider(),
+                  _buildMenuItem(
+                    Icons.delete_forever_outlined,
+                    "Delete Account",
+                    AppRoutes.deleteAccount,
+                  ),
                   // _divider(),
                   // _buildMenuItem(Icons.settings, "Settings", ''),
                 ],

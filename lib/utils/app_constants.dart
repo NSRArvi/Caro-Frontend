@@ -44,4 +44,6 @@ class AppConstants {
   //bank information
   static const String bankInformationGet = 'rider/bank/index';
   static const String bankInformationPost = 'rider/bank/store';
+
+  static const String deleteAccountUrl = 'rider/delete-account';
 }

@@ -47,7 +47,11 @@ class SignInController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
+    // We avoid manual disposal of emailController here because it can cause
+    // "TextEditingController was used after being disposed" errors during 
+    // Get.offAll transitions where the widget lifecycle and controller 
+    // lifecycle might get slightly out of sync.
+    // emailController.dispose(); 
     super.onClose();
   }
 }
